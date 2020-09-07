@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Properties;
 
@@ -30,15 +29,15 @@ public class ConsumerDemoAssignSeek {
         properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
-        KafkaConsumer<String, String> consumer = new KafkaConsumer<String, String>(properties);
+        KafkaConsumer<String, String> consumer = new KafkaConsumer<>(properties);
 
         TopicPartition partitionToReadFrom = new TopicPartition(topic,0);
-        long offsetToReadFrom = 15l;
+        long offsetToReadFrom = 15L;
 
         // assign
         consumer.assign(Arrays.asList(partitionToReadFrom));
 
-        //seek
+        // seek
         consumer.seek(partitionToReadFrom,offsetToReadFrom);
 
         int numberOfMessagesToReadFrom = 5;

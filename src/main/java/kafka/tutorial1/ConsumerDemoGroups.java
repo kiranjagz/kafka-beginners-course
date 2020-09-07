@@ -18,8 +18,8 @@ public class ConsumerDemoGroups {
         Logger logger = LoggerFactory.getLogger(ConsumerDemoGroups.class.getName());
 
         String bootstrapServers = "127.0.0.1:9092";
-        String groupId = "my_fifth_consumer_application";
-        String topic = "second_topic";
+        String groupId = "my_consumer_application";
+        String topic = "first_topic";
 
         Properties properties = new Properties();
         properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
@@ -28,7 +28,7 @@ public class ConsumerDemoGroups {
         properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
-        KafkaConsumer<String, String> consumer = new KafkaConsumer<String, String>(properties);
+        KafkaConsumer<String, String> consumer = new KafkaConsumer<>(properties);
 
         consumer.subscribe(Arrays.asList(topic));
 
