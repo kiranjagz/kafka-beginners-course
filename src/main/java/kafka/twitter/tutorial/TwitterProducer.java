@@ -17,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
@@ -46,13 +45,14 @@ public class TwitterProducer {
     public void run(){
         logger.info("Application started");
 
-        /** Not the best of code, but just needed to read from a file and set api settings, else its stored in code. */
+        /* Not the best of code, but just needed to read from a file and set api settings, else its stored in code. */
         BufferedReader reader;
         {
             try {
                 reader = new BufferedReader(new FileReader("c:\\twitter-api.txt"));
 
-                StringBuilder sb = new StringBuilder();
+                StringBuilder sb;
+                sb = new StringBuilder();
                 String line = reader.readLine();
 
                 while (line != null){
@@ -81,7 +81,7 @@ public class TwitterProducer {
             }
         }
 
-        /** Set up your blocking queues: Be sure to size these properly based on expected TPS of your stream */
+        /* Set up your blocking queues: Be sure to size these properly based on expected TPS of your stream */
         BlockingQueue<String> msgQueue = new LinkedBlockingQueue<>(1000);
 
         // create a client
@@ -144,13 +144,12 @@ public class TwitterProducer {
         properties.setProperty(ProducerConfig.RETRIES_CONFIG, Integer.toString(Integer.MAX_VALUE));
         properties.setProperty(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, "5");
 
-        KafkaProducer<String, String> producer = new KafkaProducer<String, String>(properties);
-        return  producer;
+        return new KafkaProducer<>(properties);
     }
 
     public Client createTwitterClient(BlockingQueue<String> msgQueue){
 
-        /** Declare the host you want to connect to, the endpoint, and authentication (basic auth or oauth) */
+        /* Declare the host you want to connect to, the endpoint, and authentication (basic auth or oauth) */
         Hosts hosebirdHosts = new HttpHosts(Constants.STREAM_HOST);
         StatusesFilterEndpoint hosebirdEndpoint = new StatusesFilterEndpoint();
         // Optional: set up some followings and track terms
@@ -168,8 +167,7 @@ public class TwitterProducer {
                 .endpoint(hosebirdEndpoint)
                 .processor(new StringDelimitedProcessor(msgQueue));
 
-        Client hosebirdClient = builder.build();
         // Attempts to establish a connection.
-        return hosebirdClient;
+        return builder.build();
     }
 }
